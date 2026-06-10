@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  CUSTOMER
+}
+
+model Admin {
+  id String @id @default(uuid())
+
+  name     String
+  email    String @unique
+  password String
+
+  active      Boolean @default(true)
+
+  role Role @default(ADMIN)
+
+  permissions Permission[]
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id String @id @default(uuid())
+
+  adminId String
+  admin   Admin  @relation(fields: [adminId], references: [id])
+
+  code String
+
+  createdAt DateTime @default(now())
+}
+
+model Customer {
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  phone          String?
+  password       String
+  profile        String?
+  investedAmount Float           @default(0)
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  investments    Investment[]
+  bookings       Booking[]
+  queries        CustomerQuery[]
+}
+
+model Investment {
+  id             String   @id @default(uuid())
+  customer       Customer @relation(fields: [customerId], references: [id])
+  customerId     String
+  assetName      String
+  amount         Float
+  investmentDate DateTime @default(now())
+  notes          String?
+}
+
+model Booking {
+  id String @id @default(uuid())
+  customerId String?
+  customer Customer? @relation(fields: [customerId], references: [id])
+  isGuest Boolean @default(false)
+  name String
+  email String
+  phone String?
+  adminId String?
+  admin Admin? @relation(fields: [adminId], references: [id])
+  scheduledAt DateTime
+  topic String
+  notes String?
+  status BookingStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomerQuery {
+  id         String   @id @default(uuid())
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+  subject    String
+  messages   QueryMessage[]
+  status     String   @default("open")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model QueryMessage {
+  id        String @id @default(uuid())
+
+  queryId   String
+  query     CustomerQuery @relation(fields: [queryId], references: [id])
+
+  sender    String
+  message   String
+
+  createdAt DateTime @default(now())
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
+}
