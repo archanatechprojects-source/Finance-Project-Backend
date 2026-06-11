@@ -25,7 +25,7 @@ async function bootstrap(): Promise<void> {
   console.log(`Server is running on port ${port}`);  // Added this line to log the server port
 
   app.enableCors({
-    origin: [ "https://finance-project-frontend-henna.vercel.app" ,frontendUrl ],
+    origin: [ frontendApiUrl ,frontendUrl ],
     credentials: true,
   });
 
