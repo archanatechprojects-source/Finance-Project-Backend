@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { seedSuperAdmin } from './auth/auth.seed';
 import { PrismaService } from './prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -10,10 +11,15 @@ async function bootstrap(): Promise<void> {
   const prisma =
     app.get(PrismaService);
 
+    const config = app.get(ConfigService);
+
+  const port = config.get<number>('PORT') || 5000;
+  const frontendUrl = config.get<string>('FRONTEND_URL');
+
   await seedSuperAdmin(prisma);
 
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: frontendUrl,
     credentials: true,
   });
 
@@ -25,9 +31,8 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  await app.listen(5000);
+  await app.listen(port);
 
-  console.log('🚀 Backend running on http://localhost:5000');
 }
 
 void bootstrap();
