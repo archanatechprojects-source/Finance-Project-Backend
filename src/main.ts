@@ -19,13 +19,8 @@ async function bootstrap(): Promise<void> {
 
   await seedSuperAdmin(prisma);
 
-  console.log(`Frontend URL: ${frontendUrl}`);
-  console.log(`Server is running on port ${port}`);
-  console.log(`Frontend API URL: ${frontendApiUrl}`);  // Added this line to log the frontend API URL
-  console.log(`Server is running on port ${port}`);  // Added this line to log the server port
-
   app.enableCors({
-    origin: [ frontendApiUrl ,frontendUrl ],
+    origin: [ "https://finance-project-frontend-henna.vercel.app" ,frontendUrl ],
     credentials: true,
   });
 
