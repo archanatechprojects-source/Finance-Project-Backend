@@ -30,6 +30,6 @@ export async function seedSuperAdmin(
   });
 
   console.log(
-    "Super Admin Created"
+    "Super Admin Created successfully"
   );
 }

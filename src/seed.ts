@@ -15,15 +15,15 @@ async function main() {
     return;
   }
 
-  const password = await bcrypt.hash(
-    "SuperAdmin@123",
-    10
-  );
+  const email = process.env.SUPERADMIN_EMAIL!;
+  const plainPassword = process.env.SUPERADMIN_PASSWORD!;
+
+  const password = await bcrypt.hash(plainPassword, 10);
 
   await prisma.admin.create({
     data: {
       name: "Super Admin",
-      email: "superadmin@fleetwise.com",
+      email: email,
       password,
       role: Role.SUPER_ADMIN,
     },
