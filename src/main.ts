@@ -15,11 +15,17 @@ async function bootstrap(): Promise<void> {
 
   const port = config.get<number>('PORT') || 5000;
   const frontendUrl = config.get<string>('FRONTEND_URL');
+  const frontendApiUrl = config.get<string>('FRONTEND_API_URL');
 
   await seedSuperAdmin(prisma);
 
+  console.log(`Frontend URL: ${frontendUrl}`);
+  console.log(`Server is running on port ${port}`);
+  console.log(`Frontend API URL: ${frontendApiUrl}`);  // Added this line to log the frontend API URL
+  console.log(`Server is running on port ${port}`);  // Added this line to log the server port
+
   app.enableCors({
-    origin: frontendUrl,
+    origin: [ frontendUrl, frontendApiUrl ],
     credentials: true,
   });
 
